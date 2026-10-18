@@ -1,0 +1,938 @@
+---
+import { checkpoints } from "../data/checkpoints";
+import { projects } from "../data/projects";
+import { social } from "../data/social";
+import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
+---
+
+<section class="journey" data-journey aria-label="Journey">
+	<div class="journey-stage">
+		<div class="side side--left" aria-live="polite">
+			{
+				checkpoints.map((stop, index) => (
+					<article
+						class:list={[
+							"panel-stop",
+							"panel-stop--left",
+							{ "is-active": index === 0, "panel-stop--contact": stop.id === "contact" },
+						]}
+						data-index={index}
+						aria-hidden={index === 0 ? "false" : "true"}
+					>
+						{stop.entriesSide === "right" ? (
+							stop.highlights ? (
+								<ul class="stat-list">
+									{stop.highlights.map((item) => (
+										<li>
+											<strong>{item.value}</strong>
+											<span>{item.label}</span>
+										</li>
+									))}
+								</ul>
+							) : stop.gallery ? (
+								<div class="gallery" data-gallery aria-roledescription="carousel" aria-label="Photos">
+									<div class="gallery-viewport">
+										<div class="gallery-track">
+											{stop.gallery.map((image) => (
+												<figure class="gallery-slide">
+													<img src={image.src} alt={image.alt} />
+													<figcaption>
+														{image.caption}
+														{image.credit && <span class="gallery-credit">{image.credit}</span>}
+													</figcaption>
+												</figure>
+											))}
+										</div>
+									</div>
+									<button class="gallery-arrow gallery-arrow--prev" type="button" data-gallery-prev aria-label="Previous photo">
+										<svg viewBox="0 0 24 24" aria-hidden="true">
+											<path d="M14.5 6.5 9 12l5.5 5.5"></path>
+										</svg>
+									</button>
+									<button class="gallery-arrow gallery-arrow--next" type="button" data-gallery-next aria-label="Next photo">
+										<svg viewBox="0 0 24 24" aria-hidden="true">
+											<path d="M9.5 6.5 15 12l-5.5 5.5"></path>
+										</svg>
+									</button>
+								</div>
+							) : null
+						) : stop.entries ? (
+							<>
+								<p class="panel-label">{stop.label}</p>
+								<h2>{stop.title}</h2>
+								<ul class="edu-list">
+									{stop.entries.map((entry) => (
+										<li>
+											<h3>{entry.place}</h3>
+											<p class="edu-credential">{entry.credential}</p>
+											{entry.when && <p class="edu-when">{entry.when}</p>}
+											<p>{entry.note}</p>
+										</li>
+									))}
+								</ul>
+							</>
+						) : stop.id === "projects" ? (
+							<div class="project-grid" aria-label="Projects">
+								{projects.map((project) => (
+									<button
+										type="button"
+										class="project-tile"
+										data-project-open={project.id}
+										aria-label={`Open ${project.name}`}
+									>
+										<img src={project.media[0].src} alt="" />
+										<span class="project-tile__expand" aria-hidden="true">
+											<svg viewBox="0 0 24 24">
+												<path d="M8 4H4v4M16 4h4v4M8 20H4v-4M16 20h4v-4"></path>
+											</svg>
+										</span>
+										<span>{project.name}</span>
+									</button>
+								))}
+							</div>
+						) : stop.id === "contact" ? (
+							<div class="contact-copy">
+								<p class="panel-label">{stop.label}</p>
+								<h2 class="contact-heading">Contact me</h2>
+								<p class="contact-thanks">{stop.body}</p>
+							</div>
+						) : (
+							<>
+								<p class="panel-label">{stop.label}</p>
+								<h2>{stop.title}</h2>
+								{Array.isArray(stop.body) ? (
+									stop.body.map((paragraph) => <p>{paragraph}</p>)
+								) : (
+									<p>{stop.body}</p>
+								)}
+							</>
+						)}
+					</article>
+				))
+			}
+		</div>
+
+		<div class="road-col">
+			<svg
+				class="road"
+				viewBox={ROAD_VIEWBOX}
+				preserveAspectRatio="xMidYMid meet"
+				aria-hidden="true"
+			>
+				<path class="road-edge" d={ROAD_WIDE}></path>
+				<path class="road-cut" d={ROAD_WIDE}></path>
+				<path class="road-center" d={ROAD_WIDE}></path>
+				<g class="dots"></g>
+				<g class="car">
+					<rect class="car-wheel" x="-13" y="-12.5" width="8" height="4.5" rx="1.4"></rect>
+					<rect class="car-wheel" x="-13" y="8" width="8" height="4.5" rx="1.4"></rect>
+					<rect class="car-wheel" x="4" y="-12.5" width="8" height="4.5" rx="1.4"></rect>
+					<rect class="car-wheel" x="4" y="8" width="8" height="4.5" rx="1.4"></rect>
+					<path
+						class="car-body"
+						d="M -16 -8 H 10 C 16 -8 20 -4.5 20 0 C 20 4.5 16 8 10 8 H -16 C -20 8 -20 4.5 -20 0 C -20 -4.5 -20 -8 -16 -8 Z"
+					></path>
+					<rect class="car-glass" x="0" y="-4.6" width="12" height="9.2" rx="1.6"></rect>
+				</g>
+			</svg>
+			<ol class="stops" aria-hidden="true">
+				{
+					checkpoints.map((stop, index) => (
+						<li
+							class:list={[
+								"stop",
+								`stop--${index % 2 === 0 ? "left" : "right"}`,
+								{ "is-active": index === 0 },
+							]}
+							data-index={index}
+						>
+							{stop.label}
+						</li>
+					))
+				}
+			</ol>
+		</div>
+
+		<div class="side side--right" aria-live="polite">
+			{
+				checkpoints.map((stop, index) => (
+					<article
+						class:list={["panel-stop", "panel-stop--right", { "is-active": index === 0 }]}
+						data-index={index}
+						aria-hidden={index === 0 ? "false" : "true"}
+					>
+						{stop.entriesSide === "right" && stop.entries ? (
+							<>
+								<p class="panel-label">{stop.label}</p>
+								<h2>{stop.title}</h2>
+								<ul class="edu-list">
+									{stop.entries.map((entry) => (
+										<li>
+											<h3>{entry.place}</h3>
+											<p class="edu-credential">{entry.credential}</p>
+											{entry.when && <p class="edu-when">{entry.when}</p>}
+											<p>{entry.note}</p>
+										</li>
+									))}
+								</ul>
+							</>
+						) : stop.id === "projects" ? (
+							<>
+								<p class="panel-label">{stop.label}</p>
+								<h2>{stop.title}</h2>
+								{Array.isArray(stop.body) ? (
+									stop.body.map((paragraph) => <p>{paragraph}</p>)
+								) : (
+									<p>{stop.body}</p>
+								)}
+							</>
+						) : stop.gallery ? (
+							<div class="gallery" data-gallery aria-roledescription="carousel" aria-label="Photos">
+								<div class="gallery-viewport">
+									<div class="gallery-track">
+										{stop.gallery.map((image) => (
+											<figure class="gallery-slide">
+												<img src={image.src} alt={image.alt} />
+												<figcaption>
+													{image.caption}
+													{image.credit && <span class="gallery-credit">{image.credit}</span>}
+												</figcaption>
+											</figure>
+										))}
+									</div>
+								</div>
+								<button class="gallery-arrow gallery-arrow--prev" type="button" data-gallery-prev aria-label="Previous photo">
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M14.5 6.5 9 12l5.5 5.5"></path>
+									</svg>
+								</button>
+								<button class="gallery-arrow gallery-arrow--next" type="button" data-gallery-next aria-label="Next photo">
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M9.5 6.5 15 12l-5.5 5.5"></path>
+									</svg>
+								</button>
+							</div>
+						) : stop.id === "contact" ? (
+							<ul class="contact-links">
+								<li>
+									<a href={social.linkedin} target="_blank" rel="noopener noreferrer">
+										<svg viewBox="0 0 24 24" aria-hidden="true">
+											<path
+												d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"
+											></path>
+										</svg>
+										LinkedIn
+									</a>
+								</li>
+								<li>
+									<a href={social.github} target="_blank" rel="noopener noreferrer">
+										<svg viewBox="0 0 24 24" aria-hidden="true">
+											<path
+												d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.32 6.84 9.67.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.12-1.5-1.12-1.5-.92-.64.07-.63.07-.63 1.02.07 1.56 1.07 1.56 1.07.9 1.57 2.36 1.12 2.94.85.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.1 0-1.13.39-2.05 1.03-2.77-.1-.26-.45-1.32.1-2.74 0 0 .84-.27 2.75 1.02A9.3 9.3 0 0 1 12 6.84c.85.004 1.71.12 2.51.35 1.91-1.29 2.75-1.02 2.75-1.02.55 1.42.2 2.48.1 2.74.64.72 1.03 1.64 1.03 2.77 0 3.97-2.35 4.84-4.58 5.1.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.59.69.48A10.14 10.14 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"
+											></path>
+										</svg>
+										GitHub
+									</a>
+								</li>
+								<li>
+									<a href={social.email}>
+										<svg viewBox="0 0 24 24" aria-hidden="true">
+											<path
+												d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"
+											></path>
+										</svg>
+										{social.emailLabel}
+									</a>
+								</li>
+							</ul>
+						) : stop.detail ? (
+							<>
+								<p class="panel-kicker">At this stop</p>
+								<p class="panel-detail">{stop.detail}</p>
+							</>
+						) : null}
+					</article>
+				))
+			}
+		</div>
+	</div>
+
+	<div class="project-modal" data-project-modal hidden>
+		<button type="button" class="project-modal__backdrop" data-project-close aria-label="Close project"></button>
+		<div class="project-modal__dialog" role="dialog" aria-modal="true">
+			<button type="button" class="project-modal__close" data-project-close aria-label="Close">
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path d="M6 6l12 12M18 6 6 18"></path>
+				</svg>
+			</button>
+			{
+				projects.map((project) => (
+					<article class="project-modal__sheet" data-project-sheet={project.id} hidden>
+						<div class="project-modal__copy">
+							<h3 id={`project-title-${project.id}`}>{project.name}</h3>
+							<p>{project.summary}</p>
+							<div class="project-modal__links">
+								{project.site && (
+									<a href={project.site} target="_blank" rel="noopener noreferrer">
+										Website
+									</a>
+								)}
+								{project.github && (
+									<a href={project.github} target="_blank" rel="noopener noreferrer">
+										GitHub
+									</a>
+								)}
+							</div>
+						</div>
+						<div class="project-modal__photos">
+							{project.media.map((item) => (
+								<img src={item.src} alt={item.alt} />
+							))}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	import gsap from "gsap";
+	import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+	import { ROAD_NARROW, ROAD_WIDE } from "../data/road";
+
+	gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+	const SVG_NS = "http://www.w3.org/2000/svg";
+	const MOBILE = window.matchMedia("(max-width: 768px)");
+	const NARROW = window.matchMedia("(max-width: 720px)");
+	const REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+	const section = document.querySelector<HTMLElement>("[data-journey]");
+	const edge = section?.querySelector<SVGPathElement>(".road-edge");
+	const cut = section?.querySelector<SVGPathElement>(".road-cut");
+	const center = section?.querySelector<SVGPathElement>(".road-center");
+	const dots = section?.querySelector<SVGGElement>(".dots");
+	const car = section?.querySelector<SVGGElement>(".car");
+	const roadCol = section?.querySelector<HTMLElement>(".road-col");
+	const labels = section ? [...section.querySelectorAll<HTMLElement>(".stop")] : [];
+	const leftPanels = section
+		? [...section.querySelectorAll<HTMLElement>(".panel-stop--left")]
+		: [];
+	const rightPanels = section
+		? [...section.querySelectorAll<HTMLElement>(".panel-stop--right")]
+		: [];
+
+	if (
+		section &&
+		edge &&
+		cut &&
+		center &&
+		dots &&
+		car &&
+		roadCol &&
+		labels.length > 1
+	) {
+		type JourneyHost = HTMLElement & { _journeyCleanup?: () => void };
+		const host = section as JourneyHost;
+		host._journeyCleanup?.();
+
+		const roads = [edge, cut, center];
+		const count = labels.length;
+		const step = 1 / (count - 1);
+		let progress = 0;
+		let active = -1;
+		let stopAll = () => {};
+		let scrollTween: gsap.core.Tween | null = null;
+		let moveTween: gsap.core.Tween | null = null;
+		let moveId = 0;
+		let tweening = false;
+		let lockDir = 0;
+		let lockUntil = 0;
+		let wheelAccum = 0;
+		const driver = { p: 0 };
+		const scrollPerStop = () => Math.round(window.innerHeight * 0.92);
+		const BEAT = 0.9;
+		const HANDOFF = 1.05;
+
+		const roadPath = () => (NARROW.matches ? ROAD_NARROW : ROAD_WIDE);
+
+		const applyRoad = () => {
+			const d = roadPath();
+			for (const path of roads) path.setAttribute("d", d);
+		};
+
+		const placeCarOnPath = (value: number) => {
+			const length = edge.getTotalLength();
+			const distance = length * value;
+			const point = edge.getPointAtLength(distance);
+			const ahead = edge.getPointAtLength(Math.min(length, distance + 4));
+			const behind = edge.getPointAtLength(Math.max(0, distance - 4));
+			const angle =
+				(Math.atan2(ahead.y - behind.y, ahead.x - behind.x) * 180) / Math.PI;
+			car.setAttribute(
+				"transform",
+				`translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${angle.toFixed(2)})`,
+			);
+		};
+
+		const placeDots = () => {
+			const length = edge.getTotalLength();
+			dots.replaceChildren();
+			for (let i = 0; i < count; i++) {
+				const point = edge.getPointAtLength(length * i * step);
+				const dot = document.createElementNS(SVG_NS, "circle");
+				dot.setAttribute("class", i === active ? "dot is-active" : "dot");
+				dot.setAttribute("cx", point.x.toFixed(2));
+				dot.setAttribute("cy", point.y.toFixed(2));
+				dot.setAttribute("r", "6");
+				dots.appendChild(dot);
+			}
+		};
+
+		const placeLabels = () => {
+			if (!document.documentElement.classList.contains("is-animated")) return;
+			const rect = roadCol.getBoundingClientRect();
+			const matrix = edge.getScreenCTM();
+			if (!matrix || rect.height === 0) return;
+			const length = edge.getTotalLength();
+			labels.forEach((label, i) => {
+				const point = edge.getPointAtLength(length * i * step);
+				const screen = new DOMPoint(point.x, point.y).matrixTransform(matrix);
+				const onLeft = i % 2 === 0;
+				const x = screen.x - rect.left;
+				const y = screen.y - rect.top;
+				const gap = MOBILE.matches ? 10 : 28;
+				label.style.top = `${y}px`;
+				if (onLeft) {
+					label.style.left = "auto";
+					label.style.right = `${rect.width - x + gap}px`;
+					label.style.transform = "translateY(-50%)";
+				} else {
+					label.style.right = "auto";
+					label.style.left = `${x + gap}px`;
+					label.style.transform = "translateY(-50%)";
+				}
+			});
+		};
+
+		const paintPanels = (panels: HTMLElement[], pos: number) => {
+			const nearest = Math.round(pos);
+			for (const panel of panels) {
+				const index = Number(panel.dataset.index);
+				const dist = pos - index;
+				const abs = Math.abs(dist);
+				const opacity = abs >= 0.82 ? 0 : abs <= 0.16 ? 1 : 1 - (abs - 0.16) / 0.66;
+				panel.classList.toggle("is-active", index === nearest);
+				panel.setAttribute("aria-hidden", String(index !== nearest));
+				panel.style.pointerEvents = abs < 0.45 ? "auto" : "none";
+				const shift = MOBILE.matches ? 14 : 32;
+				gsap.set(panel, {
+					opacity,
+					y: dist * -shift,
+					visibility: opacity > 0.02 ? "visible" : "hidden",
+				});
+			}
+		};
+
+		const render = (scrollProgress: number) => {
+			const pos = scrollProgress * (count - 1);
+			progress = scrollProgress;
+			placeCarOnPath(scrollProgress);
+			center.style.strokeDashoffset = `${(-scrollProgress * 280).toFixed(1)}`;
+			paintPanels(leftPanels, pos);
+			paintPanels(rightPanels, pos);
+			const nearest = Math.round(pos);
+			active = nearest;
+			labels.forEach((label, i) => {
+				const abs = Math.abs(pos - i);
+				label.classList.toggle("is-active", i === nearest);
+				label.style.opacity = abs <= 0.2 ? "1" : String(Math.max(0.35, 1 - abs * 0.4));
+			});
+			dots.querySelectorAll("circle").forEach((dot, i) => {
+				const on = i === nearest;
+				dot.classList.toggle("is-active", on);
+				dot.setAttribute("r", on ? "7.5" : "5.5");
+			});
+		};
+
+		const showAll = () => {
+			active = -1;
+			labels.forEach((label) => {
+				label.classList.remove("is-active");
+				label.style.opacity = "";
+			});
+			for (const panel of [...leftPanels, ...rightPanels]) {
+				panel.classList.add("is-active");
+				panel.setAttribute("aria-hidden", "false");
+				panel.style.pointerEvents = "";
+				gsap.set(panel, { clearProps: "opacity,visibility,transform" });
+			}
+			dots.querySelectorAll("circle").forEach((dot, i) => {
+				dot.classList.toggle("is-active", i === 0);
+			});
+		};
+
+		const layout = () => {
+			applyRoad();
+			placeDots();
+			placeLabels();
+			placeCarOnPath(progress);
+		};
+
+		const pinSpan = () => {
+			const pin = scrollTween?.scrollTrigger;
+			if (pin && pin.end > pin.start) return (pin.end - pin.start) / (count - 1);
+			return scrollPerStop();
+		};
+
+		const go = (top: number, dir: number, duration = BEAT) => {
+			const max = document.documentElement.scrollHeight - window.innerHeight;
+			const dest = Math.max(0, Math.min(max, Math.round(top)));
+			if (Math.abs(dest - window.scrollY) < 2) return;
+			const id = ++moveId;
+			moveTween?.kill();
+			tweening = true;
+			lockDir = dir;
+			lockUntil = performance.now() + duration * 1000 + 60;
+			moveTween = gsap.to(window, {
+				scrollTo: { y: dest, autoKill: false },
+				duration,
+				ease: duration > BEAT ? "power2.inOut" : "power3.inOut",
+				overwrite: true,
+				onComplete: () => {
+					if (id !== moveId) return;
+					tweening = false;
+					ScrollTrigger.update();
+				},
+				onInterrupt: () => {
+					if (id !== moveId) return;
+					tweening = false;
+				},
+			});
+		};
+
+		const advance = (dir: number) => {
+			const pin = scrollTween?.scrollTrigger;
+			if (!pin || dir === 0) return;
+			const y = window.scrollY;
+			const span = pinSpan();
+
+			if (y < pin.start - 1) {
+				if (dir > 0) go(pin.start, dir, HANDOFF);
+				return;
+			}
+
+			const local = (y - pin.start) / span;
+			const base = dir > 0 ? Math.floor(local + 0.04) : Math.ceil(local - 0.04);
+			const next = Math.max(0, Math.min(count - 1, base + dir));
+			const dest = pin.start + next * span;
+			if (dir < 0 && next === 0 && Math.abs(y - pin.start) < span * 0.12) {
+				go(0, dir, HANDOFF);
+				return;
+			}
+			go(dest, dir);
+		};
+
+		const controlled = () => {
+			const pin = scrollTween?.scrollTrigger;
+			if (!pin) return false;
+			return window.scrollY <= pin.end + 2;
+		};
+
+		const locked = (dir: number) => performance.now() < lockUntil && dir === lockDir;
+
+		const buildScroll = () => {
+			scrollTween?.scrollTrigger?.kill(true);
+			scrollTween?.kill();
+			scrollTween = null;
+
+			applyRoad();
+			const held = Math.round(progress * (count - 1)) * step;
+			driver.p = held;
+			progress = held;
+			placeCarOnPath(progress);
+
+			scrollTween = gsap.to(driver, {
+				p: 1,
+				ease: "none",
+				scrollTrigger: {
+					id: "journey-pin",
+					trigger: section,
+					start: "top top",
+					end: () => `+=${(count - 1) * scrollPerStop()}`,
+					pin: true,
+					scrub: true,
+					invalidateOnRefresh: true,
+					onUpdate(self) {
+						render(self.progress);
+					},
+				},
+			});
+		};
+
+		const bindInput = () => {
+			const modal = section.querySelector<HTMLElement>("[data-project-modal]");
+			const modalOpen = () => modal != null && !modal.hidden;
+
+			const onWheel = (event: WheelEvent) => {
+				if (modalOpen()) {
+					event.preventDefault();
+					return;
+				}
+				if (!controlled()) return;
+				if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+				event.preventDefault();
+				const dir = Math.sign(event.deltaY);
+				if (!dir || locked(dir)) return;
+
+				const pin = scrollTween?.scrollTrigger;
+				const inHero = pin != null && window.scrollY < pin.start - 1;
+				wheelAccum += event.deltaY;
+				if (Math.abs(wheelAccum) < (inHero ? 8 : 24)) return;
+				wheelAccum = 0;
+				advance(dir);
+			};
+
+			let touchStartY = 0;
+			let touchDelta = 0;
+			const onTouchStart = (event: TouchEvent) => {
+				touchStartY = event.touches[0]?.clientY ?? 0;
+				touchDelta = 0;
+			};
+			const onTouchMove = (event: TouchEvent) => {
+				if (modalOpen()) {
+					event.preventDefault();
+					return;
+				}
+				if (!controlled()) return;
+				const y = event.touches[0]?.clientY ?? touchStartY;
+				touchDelta = touchStartY - y;
+				if (Math.abs(touchDelta) > 8) event.preventDefault();
+			};
+			const onTouchEnd = () => {
+				if (modalOpen()) return;
+				if (!controlled() || Math.abs(touchDelta) < 36) return;
+				const dir = Math.sign(touchDelta);
+				touchDelta = 0;
+				if (locked(dir)) return;
+				advance(dir);
+			};
+
+			const onKey = (event: KeyboardEvent) => {
+				if (event.metaKey || event.ctrlKey || event.altKey) return;
+				const target = event.target as HTMLElement | null;
+				if (target && /^(INPUT|TEXTAREA|BUTTON|A|SELECT)$/.test(target.tagName)) return;
+				let dir = 0;
+				if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ") dir = 1;
+				else if (event.key === "ArrowUp" || event.key === "PageUp") dir = -1;
+				else if (event.key === "Home") {
+					event.preventDefault();
+					go(0, -1);
+					return;
+				} else if (event.key === "End") {
+					const pin = scrollTween?.scrollTrigger;
+					if (!pin) return;
+					event.preventDefault();
+					go(pin.end, 1);
+					return;
+				}
+				if (!dir || !controlled() || locked(dir) || modalOpen()) return;
+				event.preventDefault();
+				advance(dir);
+			};
+
+			let lastY = window.scrollY;
+			let settleTimer = 0;
+			const onScroll = () => {
+				const dir = Math.sign(window.scrollY - lastY);
+				if (dir) lockDir = tweening ? lockDir : dir;
+				lastY = window.scrollY;
+				if (tweening) return;
+				window.clearTimeout(settleTimer);
+				settleTimer = window.setTimeout(() => {
+					const pin = scrollTween?.scrollTrigger;
+					if (!pin || tweening) return;
+					const y = window.scrollY;
+					if (y > 16 && y < pin.start - 16) {
+						const downward = lockDir >= 0;
+						go(downward ? pin.start : 0, downward ? 1 : -1, HANDOFF);
+						return;
+					}
+					if (y < pin.start || y > pin.end) return;
+					const span = pinSpan();
+					const nearest = Math.round((y - pin.start) / span);
+					const dest = pin.start + nearest * span;
+					if (Math.abs(dest - y) > 8) go(dest, dir || 1);
+				}, 90);
+			};
+
+			const onEnter = (event: Event) => {
+				event.preventDefault();
+				const pin = scrollTween?.scrollTrigger;
+				if (!pin) return;
+				go(pin.start, 1, HANDOFF);
+			};
+
+			window.addEventListener("wheel", onWheel, { passive: false });
+			window.addEventListener("touchstart", onTouchStart, { passive: true });
+			window.addEventListener("touchmove", onTouchMove, { passive: false });
+			window.addEventListener("touchend", onTouchEnd);
+			window.addEventListener("keydown", onKey);
+			window.addEventListener("scroll", onScroll, { passive: true });
+			section.addEventListener("journey:enter", onEnter);
+
+			return () => {
+				window.clearTimeout(settleTimer);
+				window.removeEventListener("wheel", onWheel);
+				window.removeEventListener("touchstart", onTouchStart);
+				window.removeEventListener("touchmove", onTouchMove);
+				window.removeEventListener("touchend", onTouchEnd);
+				window.removeEventListener("keydown", onKey);
+				window.removeEventListener("scroll", onScroll);
+				section.removeEventListener("journey:enter", onEnter);
+			};
+		};
+
+		const clearPanelMotion = () => {
+			for (const panel of [...leftPanels, ...rightPanels]) {
+				panel.style.pointerEvents = "";
+				gsap.set(panel, { clearProps: "opacity,visibility,transform,y" });
+			}
+			labels.forEach((label) => {
+				label.classList.remove("is-active");
+				label.style.opacity = "";
+			});
+		};
+
+		const bindMobileEnter = () => {
+			const onEnter = (event: Event) => {
+				event.preventDefault();
+				section.scrollIntoView({ behavior: "smooth", block: "start" });
+			};
+			section.addEventListener("journey:enter", onEnter);
+			return () => section.removeEventListener("journey:enter", onEnter);
+		};
+
+		const bootMobile = () => {
+			document.documentElement.classList.remove("is-animated");
+			document.documentElement.classList.add("is-mobile");
+			scrollTween?.scrollTrigger?.kill(true);
+			scrollTween?.kill();
+			scrollTween = null;
+			moveTween?.kill();
+			moveTween = null;
+			tweening = false;
+			progress = 0;
+			driver.p = 0;
+			clearPanelMotion();
+			showAll();
+			return bindMobileEnter();
+		};
+
+		const boot = () => {
+			stopAll();
+			stopAll = () => {};
+			progress = 0;
+			driver.p = 0;
+			scrollTween = null;
+			moveTween?.kill();
+			moveTween = null;
+			tweening = false;
+
+			if (REDUCE.matches) {
+				document.documentElement.classList.remove("is-animated", "is-mobile");
+				layout();
+				showAll();
+				return;
+			}
+
+			if (MOBILE.matches) {
+				const detachEnter = bootMobile();
+				let resizeTimer = 0;
+				const onResize = () => {
+					window.clearTimeout(resizeTimer);
+					resizeTimer = window.setTimeout(() => boot(), 120);
+				};
+				window.addEventListener("resize", onResize);
+				stopAll = () => {
+					detachEnter();
+					window.clearTimeout(resizeTimer);
+					window.removeEventListener("resize", onResize);
+				};
+				return;
+			}
+
+			document.documentElement.classList.remove("is-mobile");
+			document.documentElement.classList.add("is-animated");
+			active = -1;
+			applyRoad();
+			placeDots();
+			placeLabels();
+			render(0);
+			buildScroll();
+			const detachInput = bindInput();
+			requestAnimationFrame(() => {
+				ScrollTrigger.refresh();
+				placeLabels();
+				render(scrollTween?.scrollTrigger?.progress ?? 0);
+			});
+
+			let resizeTimer = 0;
+			const onResize = () => {
+				window.clearTimeout(resizeTimer);
+				resizeTimer = window.setTimeout(() => {
+					progress = scrollTween?.scrollTrigger?.progress ?? progress;
+					placeLabels();
+					buildScroll();
+					ScrollTrigger.refresh();
+					render(scrollTween?.scrollTrigger?.progress ?? progress);
+				}, 120);
+			};
+			window.addEventListener("resize", onResize);
+
+			stopAll = () => {
+				window.clearTimeout(resizeTimer);
+				window.removeEventListener("resize", onResize);
+				detachInput();
+				moveTween?.kill();
+				moveTween = null;
+				scrollTween?.scrollTrigger?.kill(true);
+				scrollTween?.kill();
+				scrollTween = null;
+			};
+		};
+
+		const onReduce = () => boot();
+		const onLayoutChange = () => boot();
+
+		boot();
+		REDUCE.addEventListener("change", onReduce);
+		MOBILE.addEventListener("change", onLayoutChange);
+		NARROW.addEventListener("change", onLayoutChange);
+		host._journeyCleanup = () => {
+			stopAll();
+			REDUCE.removeEventListener("change", onReduce);
+			MOBILE.removeEventListener("change", onLayoutChange);
+			NARROW.removeEventListener("change", onLayoutChange);
+		};
+	}
+</script>
+
+<script>
+	const REDUCE_GALLERY = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+	for (const gallery of document.querySelectorAll<HTMLElement>("[data-gallery]")) {
+		type GalleryHost = HTMLElement & { _galleryCleanup?: () => void };
+		const host = gallery as GalleryHost;
+		host._galleryCleanup?.();
+
+		const track = gallery.querySelector<HTMLElement>(".gallery-track");
+		const prev = gallery.querySelector<HTMLButtonElement>("[data-gallery-prev]");
+		const next = gallery.querySelector<HTMLButtonElement>("[data-gallery-next]");
+		const total = gallery.querySelectorAll(".gallery-slide").length;
+		if (!track || !prev || !next || total < 2) continue;
+
+		let index = 0;
+		let timer = 0;
+
+		const render = () => {
+			track.style.transform = `translateX(${-index * 100}%)`;
+		};
+
+		const go = (nextIndex: number) => {
+			index = (nextIndex + total) % total;
+			render();
+		};
+
+		const arm = () => {
+			window.clearInterval(timer);
+			if (REDUCE_GALLERY.matches) return;
+			timer = window.setInterval(() => go(index + 1), 4500);
+		};
+
+		const onPrev = () => {
+			go(index - 1);
+			arm();
+		};
+		const onNext = () => {
+			go(index + 1);
+			arm();
+		};
+
+		prev.addEventListener("click", onPrev);
+		next.addEventListener("click", onNext);
+		arm();
+		REDUCE_GALLERY.addEventListener("change", arm);
+
+		host._galleryCleanup = () => {
+			window.clearInterval(timer);
+			prev.removeEventListener("click", onPrev);
+			next.removeEventListener("click", onNext);
+			REDUCE_GALLERY.removeEventListener("change", arm);
+		};
+	}
+</script>
+
+<script>
+	const modal = document.querySelector<HTMLElement>("[data-project-modal]");
+	if (modal) document.body.appendChild(modal);
+	const dialog = modal?.querySelector<HTMLElement>(".project-modal__dialog");
+	const sheets = modal ? [...modal.querySelectorAll<HTMLElement>("[data-project-sheet]")] : [];
+
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+	let closing = false;
+
+	const finishClose = () => {
+		if (!modal || !dialog) return;
+		closing = false;
+		dialog.classList.remove("is-rising", "is-leaving");
+		modal.hidden = true;
+		document.body.style.overflow = "";
+		for (const sheet of sheets) sheet.hidden = true;
+	};
+
+	const closeModal = () => {
+		if (!modal || !dialog || modal.hidden || closing) return;
+		if (reduceMotion.matches) {
+			finishClose();
+			return;
+		}
+		closing = true;
+		dialog.classList.remove("is-rising");
+		dialog.classList.add("is-leaving");
+		dialog.addEventListener("animationend", finishClose, { once: true });
+	};
+
+	const openModal = (id: string) => {
+		if (!modal || !dialog || closing) return;
+		const sheet = sheets.find((item) => item.dataset.projectSheet === id);
+		if (!sheet) return;
+		for (const item of sheets) item.hidden = item !== sheet;
+		const title = sheet.querySelector("h3");
+		if (title?.id) dialog.setAttribute("aria-labelledby", title.id);
+		modal.hidden = false;
+		document.body.style.overflow = "hidden";
+		dialog.classList.remove("is-rising", "is-leaving");
+		if (reduceMotion.matches) return;
+		requestAnimationFrame(() => dialog.classList.add("is-rising"));
+	};
+
+	document.querySelector("[data-journey]")?.addEventListener("click", (event) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+		const open = target.closest<HTMLElement>("[data-project-open]");
+		if (open?.dataset.projectOpen) openModal(open.dataset.projectOpen);
+	});
+
+	modal?.addEventListener("click", (event) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+		if (target.closest("[data-project-close]")) closeModal();
+	});
+
+	window.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") closeModal();
+	});
+</script>
