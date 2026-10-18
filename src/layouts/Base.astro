@@ -19,10 +19,52 @@ const {
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
+		<script is:inline>
+			const storedTheme = localStorage.getItem("theme");
+			const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+			if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
+				document.documentElement.dataset.theme = "dark";
+			}
+		</script>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>{title}</title>
 	</head>
 	<body>
+		<button
+			type="button"
+			class="theme-toggle"
+			data-theme-toggle
+			aria-label="Enable dark mode"
+			aria-pressed="false"
+			title="Enable dark mode"
+		>
+			<span aria-hidden="true">☾</span>
+		</button>
 		<slot />
+		<script is:inline>
+			const themeToggle = document.querySelector("[data-theme-toggle]");
+		const updateThemeToggle = () => {
+			const isDark = document.documentElement.dataset.theme === "dark";
+			const label = isDark ? "Enable light mode" : "Enable dark mode";
+			themeToggle?.setAttribute("aria-label", label);
+			themeToggle?.setAttribute("title", label);
+			themeToggle?.setAttribute("aria-pressed", String(isDark));
+			const icon = themeToggle?.querySelector("span");
+			if (icon) icon.textContent = isDark ? "☀" : "☾";
+		};
+
+		updateThemeToggle();
+		themeToggle?.addEventListener("click", () => {
+			const isDark = document.documentElement.dataset.theme === "dark";
+			if (isDark) {
+				delete document.documentElement.dataset.theme;
+				localStorage.setItem("theme", "light");
+			} else {
+				document.documentElement.dataset.theme = "dark";
+				localStorage.setItem("theme", "dark");
+			}
+			updateThemeToggle();
+		});
+	</script>
 	</body>
 </html>
