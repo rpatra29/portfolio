@@ -1,9 +1,9 @@
 :root {
-	--bg: #faf3c8;
+	--bg: #ffffff;
 	--ink: #1a1a1a;
-	--muted: #5c5748;
-	--ring: #e8dc9a;
-	--surface: #fffdf0;
+	--muted: #5b5b5b;
+	--ring: #e5e5e5;
+	--surface: #f7f7f7;
 	--surface-raised: #ffffff;
 	--font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	--pad: max(1.5rem, min(6vw, 4rem));
@@ -24,6 +24,13 @@
 *::before,
 *::after {
 	box-sizing: border-box;
+	scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
 }
 
 html {
@@ -979,7 +986,6 @@ html.is-animated .panel-stop {
 	visibility: hidden;
 	pointer-events: none;
 	will-change: transform, opacity;
-	scrollbar-width: thin;
 }
 
 html.is-animated .panel-stop.is-active {

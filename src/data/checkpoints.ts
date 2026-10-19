@@ -18,6 +18,7 @@ export type Checkpoint = {
 	title: string;
 	body: string | string[];
 	detail: string;
+	birthDate?: string;
 	gallery?: GalleryImage[];
 	entries?: EducationEntry[];
 	entriesSide?: "left" | "right";
@@ -28,12 +29,13 @@ export const checkpoints: Checkpoint[] = [
 	{
 		id: "about",
 		label: "About",
-		title: "About me",
+		title: "Who I am",
 		body: [
 			"I'm Ritvik, a data science student at UC San Diego. Most of what I do is machine learning, AI, and software, like computer vision, web apps, and mobile apps. I've also taught and mentored other students.",
 			"I'm from Santa Clara. I like making things, from software projects to 3D animations and CAD models. Off the computer, you'll usually find me playing violin, playing badminton, or watching football with my friends.",
 		],
 		detail: "",
+		birthDate: "2008-02-29",
 		gallery: [
 			{
 				src: "/about/geisel.jpg",
@@ -57,7 +59,7 @@ export const checkpoints: Checkpoint[] = [
 	{
 		id: "projects",
 		label: "Projects",
-		title: "Projects",
+		title: "Things I've built",
 		body: [
 			"These are some of the projects I've picked up over the years: Nodestra for voice-guided indoor navigation, Keydance as a typing performance analyzer, Think Fast as an interactive quiz bowl platform for elementary students, and more.",
 			"Click a tile to open it. You'll get the screenshot and a short note on what it is, plus a link when there's a public repo or site.",
@@ -67,14 +69,14 @@ export const checkpoints: Checkpoint[] = [
 	{
 		id: "education",
 		label: "Education",
-		title: "Education",
+		title: "Where I study",
 		body: "",
 		detail: "",
 		entries: [
 			{
 				place: "UC San Diego",
 				credential: "B.S. in Data Science",
-				note: "I'm at the Halıcıoğlu Data Science Institute, studying machine learning, AI, and software.",
+				note: "I'm a first-year student at the Halıcıoğlu Data Science Institute, studying machine learning, AI, and software.",
 			},
 			{
 				place: "Santa Clara High School",
@@ -99,7 +101,7 @@ export const checkpoints: Checkpoint[] = [
 	{
 		id: "experience",
 		label: "Experience",
-		title: "Experience",
+		title: "What I've done",
 		body: "",
 		detail: "",
 		entriesSide: "right",
@@ -145,7 +147,7 @@ export const checkpoints: Checkpoint[] = [
 	{
 		id: "contact",
 		label: "Contact",
-		title: "Contact me",
+		title: "Let's connect",
 		body: "Thank you for reading. Please don't hesitate to reach out to connect or if you have any questions!",
 		detail: "",
 	},
