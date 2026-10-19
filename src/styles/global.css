@@ -515,6 +515,7 @@ p {
 	overflow: hidden;
 	background: color-mix(in srgb, var(--ink) 6%, var(--bg));
 	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .project-tile img {
@@ -523,6 +524,7 @@ p {
 	height: 100%;
 	object-fit: cover;
 	object-position: top center;
+	transition: transform 0.35s ease, filter 0.35s ease;
 }
 
 .project-tile > span:last-child {
@@ -538,6 +540,7 @@ p {
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	text-align: left;
+	transition: padding 0.2s ease, background 0.2s ease;
 }
 
 .project-tile__expand {
@@ -567,11 +570,26 @@ p {
 
 .project-tile:hover img,
 .project-tile:focus-visible img {
-	transform: scale(1.03);
+	transform: scale(1.08);
+	filter: brightness(0.78) saturate(1.12);
 }
 
-.project-tile img {
-	transition: transform 0.35s ease;
+.project-tile:hover,
+.project-tile:focus-visible {
+	transform: translateY(-0.35rem) scale(1.02);
+	border-color: var(--ink);
+	box-shadow: 0 1rem 2rem rgb(0 0 0 / 24%);
+}
+
+.project-tile:focus-visible {
+	outline: 3px solid var(--ink);
+	outline-offset: 3px;
+}
+
+.project-tile:hover > span:last-child,
+.project-tile:focus-visible > span:last-child {
+	padding-bottom: 0.9rem;
+	background: linear-gradient(transparent, rgb(0 0 0 / 80%));
 }
 
 .project-modal[hidden] {
@@ -736,7 +754,7 @@ p {
 .project-modal__links a:first-child {
 	border-color: var(--ink);
 	background: var(--ink);
-	color: white;
+	color: var(--bg);
 }
 
 .project-modal__links a:hover {
@@ -864,11 +882,28 @@ html.is-animated .stop {
 	font-size: 0.82rem;
 	font-weight: 500;
 	white-space: nowrap;
+	pointer-events: none;
 }
 
 html.is-animated .stop.is-active {
 	color: var(--ink);
 	font-weight: 700;
+}
+
+html.is-animated .stop button {
+	padding: 0.25rem 0.4rem;
+	border: 0;
+	border-radius: 0.35rem;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+	pointer-events: auto;
+}
+
+html.is-animated .stop button:hover,
+html.is-animated .stop button:focus-visible {
+	background: color-mix(in srgb, var(--ink) 9%, transparent);
 }
 
 html.is-animated .side {

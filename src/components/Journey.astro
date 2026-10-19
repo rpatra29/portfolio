@@ -135,7 +135,7 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 					<rect class="car-glass" x="0" y="-4.6" width="12" height="9.2" rx="1.6"></rect>
 				</g>
 			</svg>
-			<ol class="stops" aria-hidden="true">
+			<ol class="stops" aria-label="Journey stops">
 				{
 					checkpoints.map((stop, index) => (
 						<li
@@ -146,7 +146,9 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 							]}
 							data-index={index}
 						>
-							{stop.label}
+							<button type="button" aria-label={`Go to ${stop.label}`}>
+								{stop.label}
+							</button>
 						</li>
 					))
 				}
@@ -574,7 +576,25 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 
 		const bindInput = () => {
 			const modal = section.querySelector<HTMLElement>("[data-project-modal]");
+			const stops = section.querySelector<HTMLOListElement>(".stops");
 			const modalOpen = () => modal != null && !modal.hidden;
+			const goToStop = (index: number) => {
+				const pin = scrollTween?.scrollTrigger;
+				if (!pin || index < 0 || index >= count) return;
+				const dest = pin.start + index * pinSpan();
+				const dir = Math.sign(dest - window.scrollY) || 1;
+				go(dest, dir);
+			};
+
+			const onStopClick = (event: MouseEvent) => {
+				if (modalOpen()) return;
+				const target = event.target;
+				if (!(target instanceof Element)) return;
+				const stop = target.closest<HTMLElement>(".stop");
+				if (!stop?.dataset.index) return;
+				event.preventDefault();
+				goToStop(Number(stop.dataset.index));
+			};
 
 			const onWheel = (event: WheelEvent) => {
 				if (modalOpen()) {
@@ -682,6 +702,7 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 			window.addEventListener("keydown", onKey);
 			window.addEventListener("scroll", onScroll, { passive: true });
 			section.addEventListener("journey:enter", onEnter);
+			stops?.addEventListener("click", onStopClick);
 
 			return () => {
 				window.clearTimeout(settleTimer);
@@ -692,6 +713,7 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 				window.removeEventListener("keydown", onKey);
 				window.removeEventListener("scroll", onScroll);
 				section.removeEventListener("journey:enter", onEnter);
+				stops?.removeEventListener("click", onStopClick);
 			};
 		};
 
