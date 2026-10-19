@@ -2,7 +2,7 @@
 
 Personal portfolio website built with [Astro](https://astro.build), GSAP, and
 custom CSS. The site presents selected projects, experience, education, and
-about information in an interactive timeline-style layout.
+about information in an interactive timeline-style layout. Hosted on cloudflare pages.
 
 ## Development
 
