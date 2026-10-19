@@ -93,7 +93,7 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 						) : stop.id === "contact" ? (
 							<div class="contact-copy">
 								<p class="panel-label">{stop.label}</p>
-								<h2 class="contact-heading">Contact me</h2>
+								<h2 class="contact-heading">{stop.title}</h2>
 								<p class="contact-thanks">{stop.body}</p>
 							</div>
 						) : (
@@ -101,7 +101,18 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 								<p class="panel-label">{stop.label}</p>
 								<h2>{stop.title}</h2>
 								{Array.isArray(stop.body) ? (
-									stop.body.map((paragraph) => <p>{paragraph}</p>)
+									stop.body.map((paragraph, bodyIndex) => (
+										<>
+											<p>{paragraph}</p>
+											{stop.birthDate && bodyIndex === 0 && (
+												<p class="about-age">
+													I was born on leap day, February 29, 2008. I'm{" "}
+													<span data-age data-birth-date={stop.birthDate}>18</span> years old, with{" "}
+													<span data-leap-birthdays>4</span> leap-day birthdays so far.
+												</p>
+											)}
+										</>
+									))
 								) : (
 									<p>{stop.body}</p>
 								)}
@@ -840,6 +851,33 @@ import { ROAD_VIEWBOX, ROAD_WIDE } from "../data/road";
 			NARROW.removeEventListener("change", onLayoutChange);
 		};
 	}
+</script>
+
+<script>
+	const ageElement = document.querySelector<HTMLElement>("[data-age]");
+	const leapBirthdaysElement = document.querySelector<HTMLElement>("[data-leap-birthdays]");
+
+	const updateAge = () => {
+		if (!ageElement) return;
+		const [birthYear, birthMonth, birthDay] = (ageElement.dataset.birthDate ?? "2008-02-29")
+			.split("-")
+			.map(Number);
+		const today = new Date();
+		let age = today.getFullYear() - birthYear;
+		const birthdayThisYear = new Date(today.getFullYear(), birthMonth - 1, birthDay);
+		if (today < birthdayThisYear) age -= 1;
+
+		let leapBirthdays = 0;
+		for (let year = birthYear + 1; year <= today.getFullYear(); year += 1) {
+			const isLeapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+			if (isLeapYear && new Date(year, birthMonth - 1, birthDay) <= today) leapBirthdays += 1;
+		}
+
+		ageElement.textContent = String(Math.max(0, age));
+		if (leapBirthdaysElement) leapBirthdaysElement.textContent = String(leapBirthdays);
+	};
+
+	updateAge();
 </script>
 
 <script>
