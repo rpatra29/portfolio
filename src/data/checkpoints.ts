@@ -76,11 +76,13 @@ export const checkpoints: Checkpoint[] = [
 			{
 				place: "UC San Diego",
 				credential: "B.S. in Data Science",
+				when: "2026-2030",
 				note: "I'm a first-year student at the Halıcıoğlu Data Science Institute, studying machine learning, AI, and software.",
 			},
 			{
 				place: "Santa Clara High School",
 				credential: "49ers STEM Leadership Institute",
+				when: "2022-2026",
 				note: "A six-year program with the 49ers Foundation and the Silicon Valley Education Foundation. We started in 7th grade at Cabrillo, took harder math and science together, built things in the engineering lab, and finished with AP Seminar and AP Research.",
 			},
 		],
