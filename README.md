@@ -20,7 +20,16 @@ npm install
 npm run dev
 ```
 
+Build and preview the production build locally:
+
+```sh
+npm run build
+npm run preview
+```
+
 ## Deploy
+
+On a new machine, run `npx wrangler login` once before `npx wrangler deploy`.
 
 Build the site, then publish the static assets in `./dist` (`wrangler.jsonc`):
 
