@@ -20,6 +20,10 @@ npm install
 npm run dev
 ```
 
+For a clean install using the exact versions in `package-lock.json`, run
+`npm ci` instead of `npm install`. This removes any existing `node_modules`
+directory before installing.
+
 Build and preview the production build locally:
 
 ```sh
