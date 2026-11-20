@@ -31,6 +31,14 @@ npm run build
 npm run preview
 ```
 
+## Project structure
+
+- `src/pages/index.astro` — main page
+- `src/layouts/Base.astro` — shared page layout
+- `src/components/` — Hero and Journey components
+- `src/data/` — checkpoints, projects, road, and social data
+- `src/styles/global.css` — global styles
+
 ## Deploy
 
 On a new machine, run `npx wrangler login` once before `npx wrangler deploy`.
