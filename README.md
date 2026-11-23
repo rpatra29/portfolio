@@ -13,6 +13,13 @@ Requirements:
 - Node.js `22.22.0` or newer
 - npm
 
+Clone the repository and enter its directory:
+
+```sh
+git clone https://github.com/rpatra29/portfolio.git
+cd portfolio
+```
+
 Install dependencies and start the local development server:
 
 ```sh
