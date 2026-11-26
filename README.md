@@ -46,6 +46,10 @@ npm run preview
 - `src/data/` — checkpoints, projects, road, and social data
 - `src/styles/global.css` — global styles
 
+The `site` value in `astro.config.mjs` sets the base URL used by the shared
+layout for canonical and Open Graph URLs. Update it if the production domain
+changes.
+
 ## Deploy
 
 On a new machine, run `npx wrangler login` once before `npx wrangler deploy`.
